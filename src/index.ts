@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import { userRouter } from './controllers/user.controller';
 
 dotenv.config();
 
@@ -16,10 +17,12 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.get('/v1', async (_: Request, res: Response) => {
+app.get('/v2', async (_: Request, res: Response) => {
     res.status(200).json({
         message: "It's all ok"
     });
 });
+
+app.use('/v2/users', userRouter);
 
 app.listen(port, () => console.log('Listening on port: ' + port));
