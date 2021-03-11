@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { userRouter } from './controllers/user.controller';
+import { UserController } from './controllers/user.controller';
 import { Container } from 'inversify';
 import { UserContainer } from './users/ioc/user.container';
 
@@ -42,6 +42,7 @@ export class Server {
 
     private registerServices(): void {
         this._container.load(new UserContainer().get());
+        this._container.bind(UserController).toSelf().inRequestScope();
     }
 
     private registerRoutes(): void {
@@ -49,7 +50,8 @@ export class Server {
             res.status(200).json({ message: "It's all ok" });
         });
 
-        this._app.use('/v2/users', userRouter);
+        const userController = this._container.get(UserController);
+        this._app.use('/v2/users', userController.Router);
     }
 }
 

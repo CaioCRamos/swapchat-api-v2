@@ -1,50 +1,67 @@
 import express, { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
+import { USER_TYPES } from 'src/users/ioc/user.types';
 import { IUserService } from '../users/services/user.service';
 
-export const userRouter = express.Router();
+@injectable()
+export class UserController {
+    private readonly _userService: IUserService;
+    public Router = express.Router();
 
-userRouter.get('/', (req: Request, res: Response) => {
-    // const _userService: IUserService = container.get<IUserService>(USER_TYPES.IUserService);
+    constructor(@inject(USER_TYPES.IUserService) userService: IUserService) {
+        this._userService = userService;
+        this.initializeRoutes();
+    }
 
-    // res.status(200).json(_userService.getAll());
-});
+    initializeRoutes() {
+        this.Router.get('/', this.getAll);
+        this.Router.post('/', this.create);
+        this.Router.post('/accounts', this.createAccounts);
+        this.Router.get('/:id', this.getById);
+        this.Router.get('/accounts/:userAccountId/image', this.getAccountImage);
+    }
 
-userRouter.post('/', (req: Request, res: Response) => {
-    // try {
-    //     const { nome, celular, senha, perguntaSeguranca, respostaSeguranca } = req.body;
+    getAll = async (req: Request, res: Response) => {
+        res.status(200).json(this._userService.getAll());
+    };
 
-    //     const result = _userService.create({
-    //         Name: nome,
-    //         Phone: celular,
-    //         Password: senha,
-    //         SecurityQuestion: perguntaSeguranca,
-    //         SecutiryAnswer: respostaSeguranca
-    //     });
+    create = async (req: Request, res: Response) => {
+        try {
+            const { nome, celular, senha, perguntaSeguranca, respostaSeguranca } = req.body;
 
-    //     res.status(201).json({
-    //         id: result,
-    //         mensagem: "Usuário cadastrado com sucesso!"
-    //     });
-    // } catch (error) {
-    //     res.status(500).json({
-    //         mensagem: "Sua requisição falhou!",
-    //         erro: error.message
-    //     });
-    // }    
-});
+            const result = this._userService.create({
+                Name: nome,
+                Phone: celular,
+                Password: senha,
+                SecurityQuestion: perguntaSeguranca,
+                SecutiryAnswer: respostaSeguranca
+            });
 
-userRouter.post('/accounts', (req: Request, res: Response) => {
-    res.status(200).send();
-});
+            res.status(201).json({
+                id: result,
+                mensagem: "Usuário cadastrado com sucesso!"
+            });
+        } catch (error) {
+            res.status(500).json({
+                mensagem: "Sua requisição falhou!",
+                erro: error.message
+            });
+        }
+    };
 
-userRouter.post('/login', (req: Request, res: Response) => {
-    res.status(200).send();
-});
+    createAccounts = async (req: Request, res: Response) => {
+        res.status(200).send();
+    }
 
-userRouter.get('/:id', (req: Request, res: Response) => {
-    res.status(200).send();
-});
+    login = async (req: Request, res: Response) => {
+        res.status(200).send();
+    }
 
-userRouter.get('/accounts/:userAccountId/image', (req: Request, res: Response) => {
-    res.status(200).send();
-});
+    getById = async (req: Request, res: Response) => {
+        res.status(200).send();
+    }
+
+    getAccountImage = async (req: Request, res: Response) => {
+        res.status(200).send();
+    }
+}

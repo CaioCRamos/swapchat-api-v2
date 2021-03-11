@@ -9,8 +9,8 @@ export class UserContainer {
     constructor() {
         this._container = new ContainerModule(
             (bind: interfaces.Bind) => {
-                bind<IUserRepository>(USER_TYPES.IUserRepository).to(UserRepository);
-                bind<IUserService>(USER_TYPES.IUserService).to(UserService);
+                bind<IUserRepository>(USER_TYPES.IUserRepository).to(UserRepository).inRequestScope();
+                bind<IUserService>(USER_TYPES.IUserService).to(UserService).inRequestScope();
             }
         );
     }
