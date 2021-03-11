@@ -1,4 +1,7 @@
+
+import { inject, injectable } from "inversify";
 import { User } from "../domain/user";
+import { USER_TYPES } from "../ioc/user.types";
 import { IUserRepository } from "../repository/user.repository";
 
 export interface NewUser {
@@ -15,10 +18,11 @@ export interface IUserService {
     getAll(): Array<User>;
 }
 
+@injectable()
 export class UserService implements IUserService {
     private readonly _userRepository: IUserRepository;
 
-    constructor(userRepository: IUserRepository) {
+    constructor(@inject(USER_TYPES.IUserRepository) userRepository: IUserRepository) {
         this._userRepository = userRepository;
     }
 
