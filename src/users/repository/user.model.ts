@@ -1,6 +1,21 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-const schema = new mongoose.Schema({
+export interface IUserModel extends Document {
+    name: string;
+    phone: string;
+    password: string;
+    securityQuestion: string;
+    securityAnswer: string;
+    accounts: Array<IAccountModel>;
+}
+
+export interface IAccountModel extends Document {
+    name: string;
+    email: string;
+    image?: Buffer;
+}
+
+const UserSchema: Schema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -52,4 +67,4 @@ const schema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model("User", schema);
+export default mongoose.model<IUserModel>('User', UserSchema);

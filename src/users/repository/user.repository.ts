@@ -1,7 +1,8 @@
 import { injectable } from "inversify";
-import { User } from "../domain/user";
 import { Password } from "../domain/value-objects/password";
-import { SecurityQuestion } from "../domain/value-objects/security-question";
+import { SecurityQuestion } from "../domain/value-objects/security-question"; 
+import { User } from '../domain/user';
+import UserModel from './user.model';
 
 export interface IUserRepository {
     getUsers(): Array<User>;
@@ -9,7 +10,9 @@ export interface IUserRepository {
 
 @injectable()
 export class UserRepository implements IUserRepository {
-    getUsers(): Array<User> {
+    async getUsers(): Array<User> {
+        const users = await UserModel.find({});
+        
         return [
             {
                 Id: '123',
